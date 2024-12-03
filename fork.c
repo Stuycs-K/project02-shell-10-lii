@@ -8,7 +8,3 @@ void child(char ** args) {
   execvp(args[0], args);
   EXIT_SUCCESS;
 }
-
-void parent() {
-
-}
