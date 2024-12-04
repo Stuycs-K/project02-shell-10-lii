@@ -10,6 +10,7 @@ int main(int argc, int *argv[]) {
     //Variables
     char buffer[256];
     char *args[256];
+    char *cmds[256];
     //Prompts User for input
     while(1){
         printf("Give input");
@@ -18,7 +19,8 @@ int main(int argc, int *argv[]) {
         if(fgets(buffer, 255, stdin) == NULL) {
             break;
         } 
-        parse_args(buffer, args); //Parsing
+        int n = countcmds(buffer, cmds); // Counts # of commands
+        parse_args(cmds[0], args); //Parsing
         
         if(args[0] == NULL) {
             continue; // Goes to next while loop iteration
@@ -27,16 +29,21 @@ int main(int argc, int *argv[]) {
         if(strcmp(args[0], "exit")) {
             break; //Checks if user wants to exit 
         }
+        
+        for(int i  = 0; i < n; i++) {
         //Running sub processes using fork
-        pid_t sub = fork();
-        if(sub == -1) {
-            perror("Fork Failed somehow");
+            parse_args(cmds[n], args);
+            pid_t sub = fork();
+            if(sub == -1) {
+                perror("Fork Failed somehow");
+            }
+            if(sub == 0) {
+                child(args);
+            }
+            int status;
+            wait(&status);
+            n++;
         }
-        if(sub == 0) {
-            child(args);
-        }
-        int status;
-        wait(&status);
     }
     printf("Exiting shell"); //ending program
     return 0;
