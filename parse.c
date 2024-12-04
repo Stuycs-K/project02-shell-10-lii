@@ -19,7 +19,7 @@ int count_cmds(char * line, char ** cmds) {
   char *curr = line;
   char *token;
   int i = 0;
-  while(token = strsep(&curr, " ")) {
+  while(token = strsep(&curr, ";")) {
     cmds[i++] = token;
   }
   cmds[i] = NULL;
