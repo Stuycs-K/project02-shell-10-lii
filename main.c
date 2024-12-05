@@ -13,26 +13,31 @@ int main(int argc, int *argv[]) {
     char *cmds[256];
     //Prompts User for input
     while(1){
-        printf("Give input");
+        printf("%s", get_path());
         fflush(stdout);
 
         if(fgets(buffer, 255, stdin) == NULL) {
             break;
         } 
         int n = countcmds(buffer, cmds); // Counts # of commands
-        parse_args(cmds[0], args); //Parsing
-        
-        if(args[0] == NULL) {
-            continue; // Goes to next while loop iteration
-        }
-
-        if(strcmp(args[0], "exit")) {
-            break; //Checks if user wants to exit 
-        }
         
         for(int i  = 0; i < n; i++) {
         //Running sub processes using fork
             parse_args(cmds[n], args);
+            if(args[0] == NULL) {
+            continue; // Goes to next while loop iteration
+            }
+            if(strcmp(args[0], "exit")) {
+                break; //Checks if user wants to exit 
+            }
+            if(strcmp(args[0], "cd")) {
+                if(cd(args[1])) {
+                    break;
+                }
+                else {
+                    continue;
+                }
+            }
             pid_t sub = fork();
             if(sub == -1) {
                 perror("Fork Failed somehow");
